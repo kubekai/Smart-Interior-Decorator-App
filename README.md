@@ -24,4 +24,4 @@
 - 需要快速建立房間佈局，減少繁瑣操作的使用者
 
 
-## [Demo影片] ([https://example.com](https://youtu.be/EOMQi9-kDfI?si=p6UPkTYfabL94hHV))。
+## [Demo影片] [(https://youtu.be/EOMQi9-kDfI?si=p6UPkTYfabL94hHV)])。
