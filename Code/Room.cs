@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class Room : MonoBehaviour
 {
-    string objFilePath; // OBJ文件的路径
+    string objFilePath; // OBJ 檔案的路徑
     string path = "/storage/emulated/0/stairsFullCornerOuter.obj";
     public Material mat;
     public Material mat1;
@@ -18,8 +18,8 @@ public class Room : MonoBehaviour
    
    
 
-    float distance = 10f; // 相机与物体之间的距离
-    float height = 10f; // 相机与物体之间的高度
+    float distance = 10f; // 相機與物體之間的距離
+    float height = 10f; // 相機與物體之間的高度
 
     public Texture2D normalMap1;
 
@@ -109,10 +109,10 @@ public class Room : MonoBehaviour
         }
         
         string[] objFileLines = objText.Split('\n');
-        // 读取OBJ文件的内容
+        // 讀取 OBJ 檔案的內容
         //string[] objFileLines = System.IO.File.ReadAllLines(path);
 
-        // 存储顶点、三角形面和纹理坐标的列表
+        // 儲存頂點、三角形面和紋理座標的列表
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>();
@@ -125,7 +125,7 @@ public class Room : MonoBehaviour
         {
             string[] tokens = line.Split(' ');
 
-            // 处理顶点数据
+            // 處理頂點資料
             if (tokens[0] == "v")
             {
                 float x = float.Parse(tokens[1]);
@@ -134,7 +134,7 @@ public class Room : MonoBehaviour
                 vertices.Add(new Vector3(x, y, z));
             }
            
-            // 处理三角形面数据
+            // 處理三角形面資料
             else if (tokens[0] == "f")
             {
                 List<int> triangleIndices = new List<int>();
@@ -148,10 +148,10 @@ public class Room : MonoBehaviour
                 Vector3 vertex2 = vertices[triangleIndices[1]];
                 Vector3 vertex3 = vertices[triangleIndices[2]];
 
-                // 计算三角形的法向量
+                // 計算三角形的法向量
                 Vector3 faceNormal = Vector3.Cross(vertex2 - vertex1, vertex3 - vertex1).normalized;
 
-                // 获取相邻三角形的法向量
+                // 取得相鄰三角形的法向量
                 Vector3 prevFaceNormal = Vector3.zero;
                 if (triangleIndices.Count >= 3)
                 {
@@ -161,10 +161,10 @@ public class Room : MonoBehaviour
                     prevFaceNormal = Vector3.Cross(prevVertex2 - prevVertex1, prevVertex3 - prevVertex1).normalized;
                 }
 
-                // 计算法向量的角度差
+                // 計算法向量的角度差
                 float angleDiff = Vector3.Angle(faceNormal, prevFaceNormal);
                 bool isAdjacentWall = prevFaceNormal.y > 0.55f;
-                // 假设法向量的y分量大于0.1并且法向量的角度差小于某个阈值的视为墙壁
+                // 假設法向量的 y 分量大於 0.1 並且法向量的角度差小於某個閾值時視為牆壁
                 if (faceNormal.y > 0.94f && angleDiff < 70f || isAdjacentWall)
                 {
                     wallTriangles.AddRange(triangleIndices);
@@ -198,13 +198,13 @@ public class Room : MonoBehaviour
         GameObject wallObj = new GameObject("WallObject");
         GameObject floorObj = new GameObject("FloorObject");
 
-        // 添加MeshFilter和MeshRenderer組件
+        // 新增 MeshFilter 和 MeshRenderer 元件
         MeshFilter wallMeshFilter = wallObj.AddComponent<MeshFilter>();
         MeshRenderer wallMeshRenderer = wallObj.AddComponent<MeshRenderer>();
         MeshFilter floorMeshFilter = floorObj.AddComponent<MeshFilter>();
         MeshRenderer floorMeshRenderer = floorObj.AddComponent<MeshRenderer>();
 
-        // 設置Mesh
+        // 設定 Mesh
         wallMeshFilter.mesh = wallMesh;
         floorMeshFilter.mesh = floorMesh;
 
@@ -249,17 +249,17 @@ public class Room : MonoBehaviour
 
         //obj.GetComponent<MeshRenderer>().material.color = Color.gray;
 
-        // 将物体放置在场景中
+        // 將物體放置在場景中
         obj.transform.position = Vector3.zero;
 
-        // 调用 CalculatePoints 函数
+        // 呼叫 CalculatePoints 函式
         Vector3 centerPoint;
         Vector3[] boundaryPoints;
         float scaleFactor;
         CalculatePoints(floorObj, out centerPoint, out boundaryPoints, out scaleFactor);
         
 
-        // 打印结果
+        // 列印結果
         //Debug.Log("Center Point: " + centerPoint);
 
         for (int i = 0; i < boundaryPoints.Length; i++)
@@ -271,8 +271,8 @@ public class Room : MonoBehaviour
          GlobalValue.Position.y = 0.0f;
 
 
-        // 创建相机对象
-        Camera cameraPrefab = Camera.main; // 这里使用了一个示例相机，你可以根据需要替换成其他相机
+        // 建立相機物件
+        Camera cameraPrefab = Camera.main; // 這裡使用一個範例相機，你可以依需求替換成其他相機
         Camera camera0 = Instantiate(cameraPrefab, centerPoint, Quaternion.identity);
         camera0.name = "Camera0";
         AttachCameraRotation(camera0);
@@ -294,7 +294,7 @@ public class Room : MonoBehaviour
         AttachCameraRotation(camera4);
         AudioListener[] audioListeners = FindObjectsOfType<AudioListener>();
 
-        //如果有多于一个 Audio Listener，则禁用多余的那些
+        // 如果有多於一個 Audio Listener，則停用多餘的那些
         if (audioListeners.Length > 1)
         {
             for (int i = 1; i < audioListeners.Length; i++)
@@ -307,14 +307,14 @@ public class Room : MonoBehaviour
 
         if (obj != null)
         {
-            // 获取物体的高度
+            // 取得物體的高度
             float objectHeight = obj.GetComponent<Renderer>().bounds.size.y;
 
-            // 设置相机的位置为物体的中心上方
+            // 設定相機位置為物體中心上方
             //Vector3 cameraPosition = obj.transform.position + Vector3.up * ((objectHeight+10f) / 2f) + Vector3.left*5 ; ;
             Vector3 cameraPosition = new Vector3(0.4f, 0.4f, 4.6f);
 
-            // 设置相机的旋转，使其朝向物体
+            // 設定相機的旋轉，使其朝向物體
             Camera.main.transform.position = cameraPosition;
             Camera.main.transform.LookAt(obj.transform.position);
         }
@@ -386,23 +386,23 @@ public class Room : MonoBehaviour
 
     void AttachCameraRotation(Camera cameraObject)
     {
-        // 检查是否已经有 CameraRotation 脚本，避免重复添加
+        // 檢查是否已經有 CameraRotation 腳本，避免重複新增
         if (cameraObject.GetComponent<CameraRotation>() == null)
         {
-            // 添加 CameraRotation 脚本
+            // 新增 CameraRotation 腳本
             CameraRotation rotationScript = cameraObject.AddComponent<CameraRotation>();
 
-            // 设置脚本的参数（如果有的话）
+            // 設定腳本的參數（如果有的話）
             rotationScript.rotationSpeed = 1.5f;
         }
     }
 
     void CalculatePoints(GameObject obj, out Vector3 center, out Vector3[] boundaries, out float scale)
     {
-        // 获取物体的 MeshFilter
+        // 取得物體的 MeshFilter
         MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
 
-        // 确保物体有 MeshFilter 组件
+        // 確保物體具有 MeshFilter 元件
         if (meshFilter == null)
         {
             Debug.LogError("MeshFilter component not found on the object.");
@@ -412,23 +412,23 @@ public class Room : MonoBehaviour
             return;
         }
 
-        // 获取物体的 Mesh
+        // 取得物體的 Mesh
         Mesh mesh = meshFilter.mesh;
 
-        // 获取物体的包围盒
+        // 取得物體的包圍盒
         Bounds bounds = mesh.bounds;
 
-        // 计算中点
+        // 計算中心點
         center = bounds.center;
 
-        // 计算四个边界点
+        // 計算四個邊界點
         boundaries = new Vector3[4];
         boundaries[0] = new Vector3(center.x - bounds.extents.x/1.2f + obj.GetComponent<Renderer>().bounds.size.x / bounds.extents.x, obj.GetComponent<Renderer>().bounds.size.y, center.z); // 左
         boundaries[1] = new Vector3(center.x + bounds.extents.x / 1.2f - obj.GetComponent<Renderer>().bounds.size.x / bounds.extents.x,center.y, center.z / 1.2f); // 右
         boundaries[2] = new Vector3(center.x, center.y, center.z / 1.2f - bounds.extents.z + obj.GetComponent<Renderer>().bounds.size.z / bounds.extents.z); // 前
-        boundaries[3] = new Vector3(center.x, center.y, center.z / 1.2f + bounds.extents.z - obj.GetComponent<Renderer>().bounds.size.z/ bounds.extents.z); // 后
+        boundaries[3] = new Vector3(center.x, center.y, center.z / 1.2f + bounds.extents.z - obj.GetComponent<Renderer>().bounds.size.z/ bounds.extents.z); // 後
 
-        // 计算缩放因子
+        // 計算縮放因子
         scale = Mathf.Max(bounds.extents.x, bounds.extents.z);
     }
 
